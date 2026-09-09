@@ -1,0 +1,286 @@
+{
+    "nodes": {
+        "Pyin Oo Lwin": {
+            "lat": 22.0331367,
+            "lon": 96.4667341
+        },
+        "Mandalay": {
+            "lat": 21.9596834,
+            "lon": 96.0948743
+        },
+        "Sagaing": {
+            "lat": 24.4741444,
+            "lon": 95.4788047
+        },
+        "Amarapura": {
+            "lat": 21.903139,
+            "lon": 96.049483
+        },
+        "Bagan": {
+            "lat": 21.1317111,
+            "lon": 94.8623644
+        },
+        "Magway": {
+            "lat": 20.2747958,
+            "lon": 94.7362245
+        },
+        "Minbu": {
+            "lat": 20.3461576,
+            "lon": 94.4729146
+        },
+        "Pakokku": {
+            "lat": 21.3343349,
+            "lon": 95.0944271
+        },
+        "Hakha": {
+            "lat": 22.6427551,
+            "lon": 93.6096217
+        },
+        "Falam": {
+            "lat": 23.0768554,
+            "lon": 93.6694734
+        },
+        "Mindat": {
+            "lat": 21.2189991,
+            "lon": 93.8080793
+        },
+        "Kanpetlet": {
+            "lat": 20.9708119,
+            "lon": 93.8230354
+        },
+        "Rihkhawdar": {
+            "lat": 23.3632468,
+            "lon": 93.3898227
+        },
+        "Myitkyina": {
+            "lat": 25.3833313,
+            "lon": 97.3999925
+        },
+        "Putao": {
+            "lat": 27.2581853,
+            "lon": 97.8915986
+        },
+        "Bhamo": {
+            "lat": 24.2585793,
+            "lon": 97.2283893
+        },
+        "Loikaw": {
+            "lat": 19.674167,
+            "lon": 97.2094441
+        },
+        "Demoso": {
+            "lat": 19.4576318,
+            "lon": 97.2828233
+        },
+        "Hpa-An": {
+            "lat": 16.8902634,
+            "lon": 97.6362745
+        },
+        "Thandaunggyi": {
+            "lat": 19.0545611,
+            "lon": 96.7407115
+        },
+        "Myeik": {
+            "lat": 12.4319552,
+            "lon": 98.5955711
+        },
+        "Dawei": {
+            "lat": 14.0797232,
+            "lon": 98.1990191
+        },
+        "Kawthaung": {
+            "lat": 9.9833083,
+            "lon": 98.5511733
+        },
+        "Thandwe": {
+            "lat": 18.4664443,
+            "lon": 94.3668616
+        },
+        "Mrauk-U": {
+            "lat": 20.590127,
+            "lon": 93.1915771
+        },
+        "Kyaukphyu": {
+            "lat": 19.4266675,
+            "lon": 93.5479844
+        },
+        "Chaungtha": {
+            "lat": 16.7859425,
+            "lon": 94.7350361
+        },
+        "Ngwesaung": {
+            "lat": 16.7709517,
+            "lon": 94.5687928
+        },
+        "Kyaikhto": {
+            "lat": 17.3120131,
+            "lon": 97.0211133
+        },
+        "Mawlamyine": {
+            "lat": 16.4908026,
+            "lon": 97.6284825
+        },
+        "Katha": {
+            "lat": 24.2196736,
+            "lon": 95.8709264
+        },
+        "Naypyidaw": {
+            "lat": 19.7753289,
+            "lon": 96.1032552
+        },
+        "Yangon": {
+            "lat": 16.7967129,
+            "lon": 96.1609916
+        },
+        "Bago": {
+            "lat": 18.2457067,
+            "lon": 96.1004931
+        },
+        "Taungoo": {
+            "lat": 18.9402101,
+            "lon": 96.4332782
+        }
+    },
+    "graph": {
+        "Pyin Oo Lwin": {
+            "Mandalay": 63.01
+        },
+        "Mandalay": {
+            "Naypyidaw": 272.86,
+            "Pyin Oo Lwin": 63.01,
+            "Amarapura": 11.41,
+            "Sagaing": 447.07,
+            "Bagan": 189.84
+        },
+        "Sagaing": {
+            "Mandalay": 447.07,
+            "Katha": 98.44
+        },
+        "Amarapura": {
+            "Mandalay": 11.41
+        },
+        "Bagan": {
+            "Mandalay": 189.84,
+            "Magway": 126.78,
+            "Pakokku": 43.12
+        },
+        "Magway": {
+            "Naypyidaw": 200.35,
+            "Minbu": 92.19,
+            "Bagan": 126.78,
+            "Thandwe": 376.56
+        },
+        "Minbu": {
+            "Magway": 92.19
+        },
+        "Pakokku": {
+            "Bagan": 43.12,
+            "Mindat": 201.42,
+            "Hakha": 362.44
+        },
+        "Hakha": {
+            "Pakokku": 362.44,
+            "Falam": 131.84
+        },
+        "Falam": {
+            "Hakha": 131.84,
+            "Rihkhawdar": 128.11
+        },
+        "Mindat": {
+            "Pakokku": 201.42,
+            "Kanpetlet": 116.26
+        },
+        "Kanpetlet": {
+            "Mindat": 116.26
+        },
+        "Rihkhawdar": {
+            "Falam": 128.11
+        },
+        "Myitkyina": {
+            "Bhamo": 196.22,
+            "Putao": 387.29
+        },
+        "Putao": {
+            "Myitkyina": 387.29
+        },
+        "Bhamo": {
+            "Katha": 234.57,
+            "Myitkyina": 196.22
+        },
+        "Loikaw": {
+            "Naypyidaw": 228.7,
+            "Demoso": 37.77
+        },
+        "Demoso": {
+            "Loikaw": 37.77
+        },
+        "Hpa-An": {
+            "Kyaikhto": 118.41,
+            "Mawlamyine": 60.33
+        },
+        "Thandaunggyi": {
+            "Taungoo": 50.34
+        },
+        "Myeik": {
+            "Dawei": 245.03,
+            "Kawthaung": 437.37
+        },
+        "Dawei": {
+            "Mawlamyine": 316.14,
+            "Myeik": 245.03
+        },
+        "Kawthaung": {
+            "Myeik": 437.37
+        },
+        "Thandwe": {
+            "Magway": 376.56,
+            "Kyaukphyu": 265.8
+        },
+        "Mrauk-U": {
+            "Kyaukphyu": 366.92
+        },
+        "Kyaukphyu": {
+            "Thandwe": 265.8,
+            "Mrauk-U": 366.92
+        },
+        "Chaungtha": {
+            "Yangon": 194.67,
+            "Ngwesaung": 29.27
+        },
+        "Ngwesaung": {
+            "Chaungtha": 29.27
+        },
+        "Kyaikhto": {
+            "Bago": 219.75,
+            "Hpa-An": 118.41
+        },
+        "Mawlamyine": {
+            "Hpa-An": 60.33,
+            "Dawei": 316.14
+        },
+        "Katha": {
+            "Sagaing": 98.44,
+            "Bhamo": 234.57
+        },
+        "Naypyidaw": {
+            "Taungoo": 116.64,
+            "Magway": 200.35,
+            "Loikaw": 228.7,
+            "Mandalay": 272.86
+        },
+        "Yangon": {
+            "Bago": 242.75,
+            "Chaungtha": 194.67
+        },
+        "Bago": {
+            "Yangon": 242.75,
+            "Kyaikhto": 219.75,
+            "Taungoo": 173.37
+        },
+        "Taungoo": {
+            "Bago": 173.37,
+            "Thandaunggyi": 50.34,
+            "Naypyidaw": 116.64
+        }
+    }
+}

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Pathfinding Visualizer</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { margin: 0; display: flex; height: 100vh; background: #0f172a; color: #f1f5f9; }
+        
+        #sidebar { 
+            width: 360px; 
+            padding: 28px 24px; 
+            background: #0f172a; 
+            overflow-y: auto; 
+            border-right: 1px solid #1e293b;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: #f8fafc;
+            margin-bottom: 8px;
+        }
+        .brand-accent { color: #38bdf8; }
+        
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        label { font-size: 0.75rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.8px; }
+        
+        select, button { 
+            width: 100%; 
+            padding: 10px 14px; 
+            font-size: 0.875rem; 
+            border-radius: 6px; 
+            border: 1px solid #1e293b; 
+            background: #182234; 
+            color: #e2e8f0;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        select:focus { border-color: #38bdf8; }
+        
+        button { 
+            background: #0284c7; 
+            color: white; 
+            border: none; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin-top: 6px;
+        }
+        button:hover { background: #0369a1; }
+        button:disabled { background: #334155; cursor: not-allowed; }
+        
+        .card { 
+            background: #182234; 
+            padding: 16px; 
+            border-radius: 8px; 
+            border: 1px solid #1e293b; 
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .card h3 { margin: 0; font-size: 0.875rem; font-weight: 600; color: #38bdf8; border-bottom: 1px solid #1e293b; padding-bottom: 8px; }
+        .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .metric-box { background: #0f172a; padding: 10px; border-radius: 6px; text-align: center; border: 1px solid #1e293b; }
+        .metric-value { font-size: 1.1rem; font-weight: 700; color: #f43f5e; }
+        .metric-label { font-size: 0.7rem; color: #64748b; margin-top: 2px; }
+        
+        #map { flex: 1; height: 100%; background: #090d16; }
+        
+        /* Clean Text Label without Black Box */
+        .clean-label {
+            background: transparent !important;
+            border: none !important;
+            color: #1e293b;
+            font-weight: 700;
+            font-size: 11px;
+            white-space: nowrap;
+            text-shadow: 1px 1px 2px #ffffff, -1px -1px 2px #ffffff, 1px -1px 2px #ffffff, -1px 1px 2px #ffffff;
+            box-shadow: none !important;
+        }
+
+        /* Subtle Point Pulse */
+        .pulse-dot {
+            background: #f43f5e;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <div class="brand">
+        <span>⚡</span> Search<span class="brand-accent">Visualizer</span>
+    </div>
+    
+    <div class="form-group">
+        <label for="source">Start Node</label>
+        <select id="source">
+            {% for city in cities %}
+                <option value="{{ city }}">{{ city }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="destination">Target Node</label>
+        <select id="destination">
+            {% for city in cities %}
+                <option value="{{ city }}" {% if loop.index == 2 %}selected{% endif %}>{{ city }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="algorithm">Algorithm</label>
+        <select id="algorithm">
+            <option value="bfs">Breadth-First Search (BFS)</option>
+            <option value="dfs">Depth-First Search (DFS)</option>
+            <option value="ucs">Uniform-Cost Search (UCS)</option>
+            <option value="ids">Iterative Deepening Search (IDS)</option>
+            <option value="greedy">Greedy Best-First Search</option>
+            <option value="astar">A* Search</option>
+        </select>
+    </div>
+
+    <button id="search-btn" onclick="runSearch()">Find Path</button>
+
+    <div id="results" class="card" style="display:none;">
+        <h3>Execution Metrics</h3>
+        <div class="metric-grid">
+            <div class="metric-box">
+                <div class="metric-value" id="res-cost">0</div>
+                <div class="metric-label">Total Cost (km)</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-value" style="color:#38bdf8;" id="res-expanded">0</div>
+                <div class="metric-label">Nodes Expanded</div>
+            </div>
+        </div>
+        <p style="font-size: 0.8rem; color: #94a3b8; margin: 0;"><strong>Path:</strong> <span id="res-path" style="color: #e2e8f0;"></span></p>
+    </div>
+
+    <div id="concept-note" class="card" style="display:none;">
+        <h3 id="note-title"></h3>
+        <p style="font-size: 0.8rem; color: #94a3b8; margin: 0;"><strong>Main Idea:</strong> <span id="note-idea" style="color: #cbd5e1;"></span></p>
+        <p style="font-size: 0.8rem; color: #94a3b8; margin: 4px 0 0 0;"><strong>Selection:</strong> <span id="note-selection" style="color: #cbd5e1;"></span></p>
+        <p style="font-size: 0.8rem; color: #94a3b8; margin: 4px 0 0 0;"><strong>Information:</strong> <span id="note-info" style="color: #cbd5e1;"></span></p>
+    </div>
+</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    let map = L.map('map', { zoomControl: false }).setView([19.7633, 96.0785], 6);
+    L.control.zoom({ position: 'topright' }).addTo(map);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap',
+        maxZoom: 19
+    }).addTo(map);
+
+    let mapData = {}, animatedLayers = [];
+
+    fetch('/get_map_data').then(res => res.json()).then(data => {
+        mapData = data;
+        
+        // Minimalist Thin Lines for Graph Edges
+        let drawn = new Set();
+        for (let u in data.graph) {
+            for (let v in data.graph[u]) {
+                let key = [u, v].sort().join('--');
+                if (!drawn.has(key)) {
+                    drawn.add(key);
+                    L.polyline([[data.nodes[u].lat, data.nodes[u].lon], [data.nodes[v].lat, data.nodes[v].lon]], { 
+                        color: '#64748b', 
+                        weight: 1.5, 
+                        opacity: 0.6,
+                        dashArray: '4, 4'
+                    }).addTo(map);
+                }
+            }
+        }
+
+        // Clean Dot & Clean Text Label (No Background Box)
+        for (let name in data.nodes) {
+            let cityName = name.split(',')[0];
+            
+            L.circleMarker([data.nodes[name].lat, data.nodes[name].lon], { 
+                radius: 4, 
+                color: '#0284c7', 
+                fillColor: '#0284c7', 
+                fillOpacity: 1,
+                weight: 1
+            }).addTo(map);
+
+            L.marker([data.nodes[name].lat, data.nodes[name].lon], {
+                icon: L.divIcon({
+                    className: 'clean-label',
+                    html: cityName,
+                    iconAnchor: [-8, 8]
+                })
+            }).addTo(map);
+        }
+    });
+
+    function clearPreviousVisuals() {
+        animatedLayers.forEach(layer => map.removeLayer(layer));
+        animatedLayers = [];
+    }
+
+    function runSearch() {
+        const source = document.getElementById('source').value;
+        const destination = document.getElementById('destination').value;
+        const algorithm = document.getElementById('algorithm').value;
+        const btn = document.getElementById('search-btn');
+
+        btn.disabled = true;
+        btn.innerText = "Processing...";
+        clearPreviousVisuals();
+
+        fetch('/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ source: source, destination: destination, algorithm: algorithm })
+        }).then(res => res.json()).then(data => {
+            btn.disabled = false;
+            btn.innerText = "Find Path";
+
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            document.getElementById('results').style.display = 'flex';
+            document.getElementById('res-cost').innerText = data.cost;
+            document.getElementById('res-expanded').innerText = data.expanded_nodes;
+            document.getElementById('res-path').innerText = data.path ? data.path.join(' ➔ ') : 'No path found';
+
+            document.getElementById('concept-note').style.display = 'flex';
+            document.getElementById('note-title').innerText = data.concept.name;
+            document.getElementById('note-idea').innerText = data.concept.main_idea;
+            document.getElementById('note-selection').innerText = data.concept.node_selection;
+            document.getElementById('note-info').innerText = data.concept.information_used;
+
+            if (data.path && data.path.length > 0) {
+                animatePathExecution(data.path);
+            }
+        });
+    }
+
+    function animatePathExecution(path) {
+        let coords = path.map(c => [mapData.nodes[c].lat, mapData.nodes[c].lon]);
+        
+        let pathLine = L.polyline([], { color: '#f43f5e', weight: 2.5, opacity: 0.9 }).addTo(map);
+        animatedLayers.push(pathLine);
+
+        let idx = 0;
+        let timer = setInterval(() => {
+            if (idx < coords.length) {
+                pathLine.addLatLng(coords[idx]);
+
+                let activeDot = L.circleMarker(coords[idx], {
+                    radius: 5,
+                    className: 'pulse-dot'
+                }).addTo(map);
+                animatedLayers.push(activeDot);
+
+                idx++;
+            } else {
+                clearInterval(timer);
+                map.fitBounds(pathLine.getBounds(), { padding: [50, 50] });
+            }
+        }, 250);
+    }
+</script>
+</body>
+</html>
