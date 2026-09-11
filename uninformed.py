@@ -66,27 +66,35 @@ def ucs(graph, start, goal):
                     heapq.heappush(pq, (cost + weight, path + [neighbor]))
     return None, 0, expanded_count
 
-# Helper function for IDS
-def dls(graph, node, goal, depth, path, visited, expanded_count):
+# Helper function for IDS (Fixed Cycle Detection)
+def dls(graph, node, goal, depth, path, expanded_count):
     if node == goal:
-        return path, expanded_count
+        return path, expanded_count[0]
     if depth <= 0:
-        return None, expanded_count
-    visited.add(node)
+        return None, expanded_count[0]
+        
     expanded_count[0] += 1
+    
     for neighbor in graph.get(node, {}):
-        if neighbor not in visited:
-            res_path, count = dls(graph, neighbor, goal, depth - 1, path + [neighbor], visited.copy(), expanded_count)
+        
+        if neighbor not in path:
+            res_path, count = dls(graph, neighbor, goal, depth - 1, path + [neighbor], expanded_count)
             if res_path:
                 return res_path, count
     return None, expanded_count[0]
 
 # 4. Iterative Deepening Search (IDS)
-def ids(graph, start, goal, max_depth=50):
+def ids(graph, start, goal, max_depth=30):
     expanded_total = 0
     for depth in range(max_depth):
         expanded_count = [0]
-        path, count = dls(graph, start, goal, depth, [start], set(), expanded_count)
+        
+        path, count = dls(graph, start, goal, depth, [start], expanded_count)
+        expanded_total += count
+        if path:
+            cost = sum(graph[path[i]][path[i+1]] for i in range(len(path)-1))
+            return path, round(cost, 2), expanded_total
+    return None, 0, expanded_total
         expanded_total += count
         if path:
             cost = sum(graph[path[i]][path[i+1]] for i in range(len(path)-1))
